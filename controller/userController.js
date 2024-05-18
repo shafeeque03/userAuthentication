@@ -143,7 +143,6 @@ const sendVerifymail = async (name, email,userId) => {
         return res.status(401).json({message:"User not registered"})
       }
       if(user.is_verified){
-        if(user.is_blocked == false){
           const correctPassword = await bcrypt.compare(password, user.password)
           if(correctPassword) {
             const token = jwt.sign(
@@ -157,11 +156,13 @@ const sendVerifymail = async (name, email,userId) => {
           }else{
             return res.status(403).json({ message: "Incorrect password" });
           }
-        }else{
-          return res.status(403).json({ message: "User is blocked" });
-        }
       }else{
-        return res.status(401).json({ message: "Email is not verified" });
+        otpId = await sendVerifymail(userData.name, userData.email, userData._id);
+        res.status(201).json({
+            status:`otp has send to ${email}`,
+            userData: userData,
+            otpId:otpId
+          })
       }
       
     } catch (error) {
