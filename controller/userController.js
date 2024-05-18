@@ -138,21 +138,21 @@ const sendVerifymail = async (name, email,userId) => {
     try {
       const email = req.body.email;
       const password = req.body.password;
-      const user = await User.findOne({ email: email });
-      if(!user) {
+      const userData = await User.findOne({ email: email });
+      if(!userData) {
         return res.status(401).json({message:"User not registered"})
       }
-      if(user.is_verified){
-          const correctPassword = await bcrypt.compare(password, user.password)
+      if(userData.is_verified){
+          const correctPassword = await bcrypt.compare(password, userData.password)
           if(correctPassword) {
             const token = jwt.sign(
-              {name: user.name, email:user.email, id:user._id,role: "user"},
+              {name: userData.name, email:userData.email, id:userData._id,role: "user"},
               process.env.SECRET_KEY,
               {
                 expiresIn: "1h",
               }
             );
-            res.status(200).json({ user, token, message: `Welome ${user.name}` });
+            res.status(200).json({ userData, token, message: `Welome ${userData.name}` });
           }else{
             return res.status(403).json({ message: "Incorrect password" });
           }
