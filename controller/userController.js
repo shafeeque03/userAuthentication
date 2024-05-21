@@ -1,8 +1,11 @@
 const User = require('../model/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {json} = require("express")
+const {json} = require("express");
 const otpModel = require('../model/otpModel');
+const nodemailer = require('nodemailer');
+const dotenv = require("dotenv");
+dotenv.config();
 
 var otpId;
 
@@ -113,7 +116,6 @@ const sendVerifymail = async (name, email,userId) => {
         const user = new User({
           name: name,
           email: req.body.email,
-          number: req.body.phone,
           password: spassword,
         });
   
